@@ -2,9 +2,9 @@ var Car = require('./Car');
 import Bicycle from './Bicycle';
 import Motorcycle from './Motorcycle';
 
-// Car.prototype.gearDown = function() {
-//     this.currentGear -= 1;
-// }
+Car.prototype.gearDown = function() {
+    this.currentGear -= 1;
+}
 
 var gol = new Car('VW', 'Gol');
 const iguana = new Bicycle('Giant', 'Iguana');
