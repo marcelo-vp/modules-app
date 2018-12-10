@@ -1,5 +1,5 @@
 const dangers = {
-    knockOver() {
+    knockOver: function() {
         return `The bicycle ${this.brand} ${this.model} will be knocked over!`;
     }
 };
