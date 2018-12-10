@@ -23,8 +23,8 @@ function selfDestroy() {
 Car.prototype.gearUp = function() {
     this.currentGear += 1;
 }
-// Car.prototype.gearDown = function() {
-//     this.currentGear -= 1;
-// }
+Car.prototype.gearDown = function() {
+    this.currentGear -= 1;
+}
 
 module.exports = Car;
