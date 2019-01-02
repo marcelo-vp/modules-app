@@ -1,4 +1,4 @@
-import Car from './module-patterns/Constructor';
+import Car from './design-patterns/Constructor';
 
 const gol = new Car('Polo', 2018, 6980);
 
