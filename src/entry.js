@@ -1,9 +1,16 @@
-import Car from './design-patterns/Constructor';
-
-const gol = new Car('Polo', 2018, 6980);
+import { Basket } from './design-patterns/ModulePattern';
 
 /**
- *  Constructor example
- */
-console.log( gol.toString() );
-console.log( gol.showYear() );
+ * Instance example
+*/
+Basket.addItem({
+    item: 'bread',
+    price: 0.5
+});
+Basket.addItem({
+    item: 'butter',
+    price: 0.3
+});
+
+console.log( Basket.getItemCount() );
+console.log( Basket.getTotal() );
