@@ -1,16 +1,9 @@
-import { Basket } from './design-patterns/ModulePattern';
+import { Counter } from './design-patterns/RevealingModule';
 
 /**
  * Instance example
 */
-Basket.addItem({
-    item: 'bread',
-    price: 0.5
-});
-Basket.addItem({
-    item: 'butter',
-    price: 0.3
-});
+Counter.start();
+Counter.increment();
 
-console.log( Basket.getItemCount() );
-console.log( Basket.getTotal() );
+console.log( Counter.getCount() );
