@@ -38,6 +38,9 @@ var Basket = (function() {
                 total += basket[count].price;
             }
             return total;
+        },
+        getContext: function() {
+            return this;
         }
     };
 
