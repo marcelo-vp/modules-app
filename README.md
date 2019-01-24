@@ -6,5 +6,5 @@ Contains the basic javascript modular path, from module creation, exporting and 
 ### To build
 `npm run build`
 
-### To run
-`npm start`
+### To run in dev mode
+`npm run dev`
