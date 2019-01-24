@@ -1,23 +1,41 @@
-import { basicSingleton, SingletonTester } from './design-patterns/Singleton';
+import { Subject, Observer, extend } from './design-patterns/Observer';
 
-var singletonOne = basicSingleton.getInstance();
-var singletonTwo = basicSingleton.getInstance();
-var privateNumberOne = singletonOne.getPrivateNumber();
-var privateNumberTwo = singletonTwo.getPrivateNumber();
+// References to DOM elements
+var controlCheckbox = document.getElementById( 'mainCheckbox' ),
+    addBtn = document.getElementById( 'addNewObserver' ),
+    container = document.getElementById( 'observersContainer' );
 
-console.log( privateNumberOne === privateNumberTwo );
-// Returns true, because both 'singletonOne' and
-// 'singletonTwo' hold the same Singleton instance
+// Concrete Subject
 
-var singletonTestOne = SingletonTester.getInstance({
-    pointX: 4,
-    pointY: 25
-});
-var singletonTestTwo = SingletonTester.getInstance();
+// Extend the controlling checkbox with the Subject class
+extend( controlCheckbox, new Subject() );
 
-console.log( singletonTestOne.name );
-console.log( singletonTestOne.name === singletonTestTwo.name );
-console.log( singletonTestOne.pointX );
-console.log( singletonTestOne.pointX === singletonTestTwo.pointX );
-console.log( singletonTestOne.pointY );
-console.log( singletonTestOne.pointY === singletonTestTwo.pointY );
+// Clicking the checkbox will trigger notifications to its observers
+controlCheckbox.onclick = function() {
+    controlCheckbox.notify( controlCheckbox.checked );
+};
+
+addBtn.onclick = addNewObserver;
+
+// Concrete Observer
+function addNewObserver() {
+
+    // Create a new checkbox to be added
+    var checkbox = document.createElement( 'input' );
+    checkbox.type = 'checkbox';
+
+    // Extend the checkbox with the Observer class
+    extend( checkbox, new Observer() );
+
+    // Override with custom update behaviour
+    checkbox.update = function( value ) {
+        this.checked = value;
+    }
+
+    // Add the new observer to out list of observers
+    controlCheckbox.addObserver( checkbox );
+
+    // Append the item to the container
+    container.appendChild( checkbox );
+
+}
