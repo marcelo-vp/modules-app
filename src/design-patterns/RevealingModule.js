@@ -1,3 +1,7 @@
+/**
+ * Revealing Module Pattern
+*/
+
 var Greetings = (function() {
 
     var privateVar = 'Some name',
