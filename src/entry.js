@@ -2,6 +2,7 @@ import { Subject, Observer, extend } from './design-patterns/Observer';
 
 // References to DOM elements
 var controlCheckbox = document.getElementById( 'mainCheckbox' ),
+    observerName = document.getElementById( 'newObserverName' ),
     addBtn = document.getElementById( 'addNewObserver' ),
     container = document.getElementById( 'observersContainer' );
 
@@ -23,36 +24,69 @@ addBtn.onclick = addNewObserver;
 function addNewObserver() {
 
     // Create a wrapper of the observer's content
-    var observer = document.createElement( 'div' );
-    observer.style.display = 'inline-block';
-    observer.style.textAlign = 'center';
-    observer.style.margin = '0 5px';
+    var wrapper = document.createElement( 'div' );
+    wrapper.style.display = 'inline-block';
+    wrapper.style.textAlign = 'center';
+    wrapper.style.margin = '0 5px';
 
-    // Create a container to hold the observer index
+    // Create an element to hold the observer index
     var index = document.createElement( 'div' );
-    
-    // Create a checkbox to be updated by the subject
-    var checkbox = document.createElement( 'input' );
-    checkbox.type = 'checkbox';
-    checkbox.style.display = 'block';
 
-    // Extend the checkbox with the Observer class
-    extend( checkbox, new Observer() );
+    // Create an element to hold the observer name
+    var name = document.createElement( 'div' );
+    name.style.display = 'block';
+    name.style.margin = '5px auto';
+    name.innerText = observerName.value;
+    
+    // Create a checkbox to be updated by the subject,
+    // which is the Concrete Observer itself
+    var observer = document.createElement( 'input' );
+    observer.type = 'checkbox';
+    observer.style.display = 'block';
+    observer.style.margin = '5px auto';
+
+    // Extend the observer with the Observer class
+    extend( observer, new Observer( observerName.value ) );
 
     // Override with custom update behaviour
-    checkbox.update = function( value ) {
+    observer.update = function( value ) {
         this.checked = value;
     }
 
     // Add the new observer to our list of observers
-    controlCheckbox.addObserver( checkbox );
-    index.innerHTML = controlCheckbox.observers.indexOf( checkbox, 0 );
+    // and assign its index
+    controlCheckbox.addObserver( observer );
+    index.innerHTML = controlCheckbox.getObserverIndex( observer );
+    
+    // Add callback function to remove the observer
+    function removeObserver( observer ) {
+        return function () {
+            controlCheckbox.removeObserver( observer );
+            container.removeChild( wrapper );
+            var count = controlCheckbox.observers.count();
+            for (var i = 0; i < count; i++) {
+                container.childNodes[i].childNodes[0].innerText = i;
+            }
+        }
+    }
+    
+    // Add button to remove the observer
+    var removeBtn = document.createElement( 'button' );
+    removeBtn.style.display = 'block';
+    removeBtn.style.margin = '5px auto 0';
+    removeBtn.innerText = 'Remove';
+    removeBtn.onclick = removeObserver( observer );
 
     // Append the content to the observer's wrapper
-    observer.appendChild( index );
-    observer.appendChild( checkbox );
+    wrapper.appendChild( index );
+    wrapper.appendChild( name );
+    wrapper.appendChild( observer );
+    wrapper.appendChild( removeBtn );
 
-    // Append the item to the container
-    container.appendChild( observer );
+    // Append the observer to the container
+    container.appendChild( wrapper );
+
+    // Clean up the observer name input
+    observerName.value = '';
 
 }
