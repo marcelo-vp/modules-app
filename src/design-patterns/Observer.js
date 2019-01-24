@@ -42,8 +42,12 @@ Subject.prototype.addObserver = function( observer ) {
     this.observers.add( observer );
 };
 
+Subject.prototype.getObserverIndex = function( observer ) {
+    return this.observers.indexOf( observer, 0 );
+}
+
 Subject.prototype.removeObserver = function( observer ) {
-    this.observers.removeAt( this.observers.indexOf( observer, 0 ) );
+    this.observers.removeAt( this.getObserverIndex( observer ) );
 };
 
 Subject.prototype.notify = function( context ) {
@@ -55,9 +59,10 @@ Subject.prototype.notify = function( context ) {
 };
 
 // The Observer
-function Observer() {
+function Observer( name ) {
+    this.name = name;
     this.update = function() {
-        // Add later..
+        // To be customized by each observer..
     };
 }
 
