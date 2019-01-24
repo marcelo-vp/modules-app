@@ -12,7 +12,7 @@ ObserverList.prototype.count = function() {
 
 ObserverList.prototype.get = function ( index ) {
     if ( index > -1 && index < this.observerList.length ) {
-        return this.observerList[ index ];
+        return this.observerList[index];
     }
 };
 
@@ -60,3 +60,12 @@ function Observer() {
         // Add later..
     };
 }
+
+// Extend an object with an extension
+function extend( obj, extension ) {
+    for ( var key in extension ) {
+        obj[key] = extension[key];
+    }
+}
+
+export { Subject, Observer, extend };
