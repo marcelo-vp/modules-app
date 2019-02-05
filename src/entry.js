@@ -1,92 +1,94 @@
-import { Subject, Observer, extend } from './design-patterns/Observer';
+import PubSub from './design-patterns/PubSub';
 
-// References to DOM elements
-var controlCheckbox = document.getElementById( 'mainCheckbox' ),
-    observerName = document.getElementById( 'newObserverName' ),
-    addBtn = document.getElementById( 'addNewObserver' ),
-    container = document.getElementById( 'observersContainer' );
+/* Using the PubSub module to create
+/ a message handler */
+var messageHandler = {};
+PubSub(messageHandler);
 
-container.style.marginTop = '20px';
+// A simple message logger that logs topics
+// and data received through the subscriber
+function messageLogger( topics, data ) {
+    console.log( 'Logging: ' + topics + ': ' + data );
+}
 
-// Concrete Subject
+// Subscribers listen for topics they have subscribed to
+// and invoke a callback function once a new notification
+// is broadcast on that topic
+var subscription = messageHandler.subscribe(
+    'inbox/newMessage', messageLogger
+);
+// The subscriber receives a token, which is 0 in this case,
+// since this is the first subscriber
+console.log( subscription );
 
-// Extend the controlling checkbox with the Subject class
-extend( controlCheckbox, new Subject() );
+// Publishers are in charge of publishing notifications
+// or topics of interest to the application
+messageHandler.publish( 'inbox/newMessage', 'Hello World!!' );
 
-// Clicking the checkbox will trigger notifications to its observers
-controlCheckbox.onclick = function() {
-    controlCheckbox.notify( controlCheckbox.checked );
-};
+// It also works with different kinds of data:
+messageHandler.publish( 'inbox/newMessage', [ 'test', 'a', 'b', 'c' ] );
+messageHandler.publish( 'inbox/newMessage', {
+    sender: 'hello@google.com',
+    body: 'Hey again!'
+} );
 
-addBtn.onclick = addNewObserver;
+// We can unsubscribe if we wish a subscriber to no longer
+// receive notifications
+messageHandler.unsubscribe( subscription );
 
-// Concrete Observer
-function addNewObserver() {
+// Once unsubscribed, the subscriber will no longer be able
+// to listen out for published topics or notifications
+// ** nothing will be logged from now on **
+messageHandler.publish( 'inbox/newMessage', 'Hello, are you still there?' );
 
-    // Create a wrapper of the observer's content
-    var wrapper = document.createElement( 'div' );
-    wrapper.style.display = 'inline-block';
-    wrapper.style.textAlign = 'center';
-    wrapper.style.margin = '0 5px';
 
-    // Create an element to hold the observer index
-    var index = document.createElement( 'div' );
+/* Using the PubSub module to create
+/ a stock grid display */
+var stockUpdater = {};
+PubSub(stockUpdater);
 
-    // Create an element to hold the observer name
-    var name = document.createElement( 'div' );
-    name.style.display = 'block';
-    name.style.margin = '5px auto';
-    name.innerText = observerName.value;
-    
-    // Create a checkbox to be updated by the subject,
-    // which is the Concrete Observer itself
-    var observer = document.createElement( 'input' );
-    observer.type = 'checkbox';
-    observer.style.display = 'block';
-    observer.style.margin = '5px auto';
+// Return the current local time
+function getCurrentTime() {    
+    var date = new Date(),
+        m = date.getMonth(),
+        d = date.getDate(),
+        y = date.getFullYear(),
+        t = date.toLocaleTimeString().toLowerCase();
 
-    // Extend the observer with the Observer class
-    extend( observer, new Observer( observerName.value ) );
+    return ( m + '/' + d + '/' + y + ' ' + t );
+}
 
-    // Override with custom update behaviour
-    observer.update = function( value ) {
-        this.checked = value;
+// Add a row of data to the stock grid
+function addGridRow( data ) {
+    console.log( 'Added a new row with: ' + JSON.stringify(data) );
+}
+
+// Update the grid's counter to show the time it was last updated
+function updateCounter( data ) {
+    console.log( 'Grid was last updated at ' + getCurrentTime() + ' with ' + JSON.stringify(data) );
+}
+
+// Update the grid using data passed to our subscribers
+function gridUpdate( topic, data ) {
+
+    if ( data !== undefined ) {
+        addGridRow( data );
+        updateCounter( data );
     }
-
-    // Add the new observer to our list of observers
-    // and assign its index
-    controlCheckbox.addObserver( observer );
-    index.innerHTML = controlCheckbox.getObserverIndex( observer );
-    
-    // Add callback function to remove the observer
-    function removeObserver( observer ) {
-        return function () {
-            controlCheckbox.removeObserver( observer );
-            container.removeChild( wrapper );
-            var count = controlCheckbox.observers.count();
-            for (var i = 0; i < count; i++) {
-                container.childNodes[i].childNodes[0].innerText = i;
-            }
-        }
-    }
-    
-    // Add button to remove the observer
-    var removeBtn = document.createElement( 'button' );
-    removeBtn.style.display = 'block';
-    removeBtn.style.margin = '5px auto 0';
-    removeBtn.innerText = 'Remove';
-    removeBtn.onclick = removeObserver( observer );
-
-    // Append the content to the observer's wrapper
-    wrapper.appendChild( index );
-    wrapper.appendChild( name );
-    wrapper.appendChild( observer );
-    wrapper.appendChild( removeBtn );
-
-    // Append the observer to the container
-    container.appendChild( wrapper );
-
-    // Clean up the observer name input
-    observerName.value = '';
 
 }
+
+// Create a subscription to the newDataAvailable topic
+var subscriber = stockUpdater.subscribe( 'newDataAvailable', gridUpdate );
+
+// Publish changes to the newDataAvailable topic
+stockUpdater.publish('newDataAvailable', {
+    summary: 'Apple made $5 billion',
+    identifier: 'APPL',
+    stockPrice: 570.91
+});
+stockUpdater.publish('newDataAvailable', {
+    summary: 'Microsoft made $20 million',
+    identifier: 'MSFT',
+    stockPrice: 30.85
+});
