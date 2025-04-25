@@ -2,6 +2,7 @@
 
 Simple app to experiment how javascript modular structure works.   
 Contains the basic javascript modular path, from module creation, exporting and importing to module patterns and bundling everything up with webpack.
+Modules do not perform actions among them, but only print logs on public methods.
 
 ### To build
 `npm run build`
