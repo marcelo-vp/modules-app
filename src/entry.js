@@ -1,4 +1,5 @@
 import PubSub from './design-patterns/PubSub';
+import Car from './vehicles/Car';
 
 /* Using the PubSub module to create
 / a message handler */
@@ -92,3 +93,13 @@ stockUpdater.publish('newDataAvailable', {
     identifier: 'MSFT',
     stockPrice: 30.85
 });
+
+// Car example
+var myCar = new Car('Toyota', 'Corolla');
+console.log(myCar.startEngine());
+console.log(myCar.showCurrentGear());
+myCar.changeGear.up();
+console.log(myCar.showCurrentGear());
+myCar.changeGear.down();
+console.log(myCar.showCurrentGear());
+myCar.inDanger(); // This will call the selfDestroy function
