@@ -1,4 +1,5 @@
 import PubSub from './design-patterns/PubSub';
+import Bicycle from './vehicles/Bicycle';
 
 /* Using the PubSub module to create
 / a message handler */
@@ -92,3 +93,13 @@ stockUpdater.publish('newDataAvailable', {
     identifier: 'MSFT',
     stockPrice: 30.85
 });
+
+// Add bycicle example
+var myBike = new Bicycle('Trek', 'Domane SL 6');
+console.log(myBike.startPedaling());
+console.log(myBike.showCurrentGear());
+myBike.changeGear.up();
+console.log(myBike.showCurrentGear());
+myBike.changeGear.down();
+console.log(myBike.showCurrentGear());
+console.log(myBike.inDanger());
